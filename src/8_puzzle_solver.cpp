@@ -39,15 +39,18 @@ void custom_puzzle() {
 		if(k == 0) { currentTransition = transitions.at(k); }
 		else if(k == 1) { currentTransition = transitions.at(k); }
 		else if(k == 2) { currentTransition = transitions.at(k); }
-		cout << "Enter the " << currentTransition
-		     << " row (separate entries by space): ";
+		
 		for(int i = 0; i < PUZZLE_WIDTH; i++) {
+			cout << "Enter the " << currentTransition
+		     << " row (separate entries by space): ";
 			cin >> entry;
 			if(entry < 1 || entry > 9) {
-				cout << "Please enter numbers between 1 and 8" << endl;
-				return;
+				cout << "Please enter numbers between 1 and 8" << endl << endl;
+				/* BUG HERE*/
+				if(k == 0) { k = 0; }
+				else { k -= 1; };
 			}
-			row.push_back(entry);
+			else row.push_back(entry);
 		}
 	}
 	print_vector(row);
