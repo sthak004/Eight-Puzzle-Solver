@@ -10,11 +10,11 @@ using namespace std;
 
 void print_vector(vector<int> &arg) {
 	string spaceBetweenEntries = "  ";
-	
+
 	cout << endl << endl;
-	cout << "SIZE OF PUZZLE: " << arg.size() << endl;
+	cout << "SIZE OF PUZZLE: " << arg.size() << endl << endl;
 	cout << "\tPuzzle" << endl;
-	cout << "---------------------" << endl << "\t";
+	cout << "-----------------------" << endl << "\t";
 	for(int i = 0; i < arg.size(); i++) {
 		if( ( i != 0 ) && ((i % PUZZLE_WIDTH) == 0) ) { cout << endl << "\t"; }
 		cout << arg.at(i) << spaceBetweenEntries;
@@ -59,8 +59,8 @@ void print_menu() {
 	char newline = '\n';
 	cout << "Welcome to the 8-puzzle solver!" << endl;
 	cout << "Designed and coded by Stavan Thaker" << endl;
-	cout << "Please enter to continue or 'q' to quit.";
-	cout << endl << ">> ";
+	cout << "Please enter to continue or 'q' to quit. ";
+	//cout << endl << ">> ";
 	userInput = cin.get();
 	if (userInput == 'q') { exit(0); }
 	else if (userInput == '\n') {
@@ -69,7 +69,6 @@ void print_menu() {
 		cout << "Please choose from the following options." << endl;
 		cout << "1. Choose default puzzle." << endl
 		     << "2. Enter your own puzzle" << endl;
-		cout << "Enter '1' or '2'";
 		cout << endl << ">> ";
 
 		cin >> puzzleChoice;
