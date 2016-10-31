@@ -9,9 +9,15 @@ using namespace std;
 
 
 void print_vector(vector<int> &arg) {
+	string spaceBetweenEntries = "  ";
+	
+	cout << endl << endl;
+	cout << "SIZE OF PUZZLE: " << arg.size() << endl;
+	cout << "\tPuzzle" << endl;
+	cout << "---------------------" << endl << "\t";
 	for(int i = 0; i < arg.size(); i++) {
-		if( (arg.size() % i ) == 0 ) { cout << endl; }
-		cout << arg.at(i) <<  " ";
+		if( ( i != 0 ) && ((i % PUZZLE_WIDTH) == 0) ) { cout << endl << "\t"; }
+		cout << arg.at(i) << spaceBetweenEntries;
 	}
 	cout << endl;
 }
@@ -44,9 +50,6 @@ void custom_puzzle() {
 			row.push_back(entry);
 		}
 	}
-	cout << endl << endl;
-	cout << "      Puzzle" << endl;
-	cout << "---------------------" << endl << "      ";
 	print_vector(row);
 }
 
