@@ -7,6 +7,14 @@ using namespace std;
 
 #define PUZZLE_WIDTH 3 /* DIMENSION OF PUZZLE (ex. 3 x 3) */
 
+void print_v(vector<int> v) {
+	cout << endl;
+	for(int i = 0; i < v.size(); i++) {
+		cout << v.at(i) << " ";
+	}
+	cout << endl;
+}
+
 
 void print_vector(vector<int> &arg) {
 	string spaceBetweenEntries = "  ";
@@ -29,31 +37,45 @@ void default_puzzle() {
 
 
 void custom_puzzle() {
-	cout << "Enter your puzzle. Use 'x' as the blank space" << endl;
+	cout << "Enter your puzzle. Use '0' as the blank space" << endl;
 	int entry;
-	vector<int> row;
-	row.clear();
+	vector<int> table;
+	table.clear();
+	vector<int> buffer;
+	buffer.clear();
 	vector<string> transitions = {"first", "second", "third"};
 	string currentTransition;
-	for(int k = 0; k < PUZZLE_WIDTH; k++) {
-		if(k == 0) { currentTransition = transitions.at(k); }
-		else if(k == 1) { currentTransition = transitions.at(k); }
-		else if(k == 2) { currentTransition = transitions.at(k); }
-		
-		for(int i = 0; i < PUZZLE_WIDTH; i++) {
-			cout << "Enter the " << currentTransition
+
+
+	for(int row = 0; row < PUZZLE_WIDTH; row++) {
+		if(row == 0) { currentTransition = transitions.at(row); }
+		else if(row == 1) { currentTransition = transitions.at(row); }
+		else if(row == 2) { currentTransition = transitions.at(row); }
+		cout << "Enter the " << currentTransition
 		     << " row (separate entries by space): ";
+		for(int rowBufferIndex = 0; rowBufferIndex < PUZZLE_WIDTH; rowBufferIndex++) {
 			cin >> entry;
-			if(entry < 1 || entry > 9) {
-				cout << "Please enter numbers between 1 and 8" << endl << endl;
-				/* BUG HERE*/
-				if(k == 0) { k = 0; }
-				else { k -= 1; };
+			buffer.push_back(entry);
+
+			if(rowBufferIndex == 2) {
+				for(int i = 0; i < buffer.size(); i++) {
+					if(buffer.at(i) < 0 || buffer.at(i) >= 9) {
+						cout << endl << endl << "\t\t***** ERROR *****" << endl;
+						cout << "\tPlease enter numbers between 1 and 8." << endl;
+						cout << "\tRemember to use '0' as the blank space." << endl << endl;
+
+						rowBufferIndex = PUZZLE_WIDTH;
+						row -= 1;
+						buffer.clear();
+					}
+				}
 			}
-			else row.push_back(entry);
 		}
+		table.insert(table.end(), buffer.begin(), buffer.end() );
+		buffer.clear();
 	}
-	print_vector(row);
+
+	print_vector(table);
 }
 
 
