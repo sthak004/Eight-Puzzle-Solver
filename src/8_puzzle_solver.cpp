@@ -7,8 +7,16 @@ using namespace std;
 
 #define PUZZLE_WIDTH 3 /* DIMENSION OF PUZZLE (ex. 3 x 3) */
 
+struct Puzzle 
+{
+	vector<int> CURRENT_STATE;
+	vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
 
-vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL VECTOR */
+	int hn;
+	int gn;
+};
+
+
 
 void print_v(vector<int> v) {
 	cout << endl;
@@ -88,7 +96,7 @@ void move_left(vector<int> &state) {
 
 	/* IF blank space is NOT on left wall*/
 	if(!isLeftWall(blank)) {
-		cout << "Moving left..." << endl;
+		cout << "\nMoving left..." << endl;
 		swap(state.at(blank), state.at(blank-1));
 	}
 	else {
@@ -102,9 +110,9 @@ void move_left(vector<int> &state) {
 void move_right(vector<int> &state) {
 	int blank = find_blank(state);
 
-	/* IF blank space is NOT on left wall*/
+	/* IF blank space is NOT on right wall*/
 	if(!isRightWall(blank)) {
-		cout << "Moving right..." << endl;
+		cout << "\nMoving right..." << endl;
 		swap(state.at(blank), state.at(blank+1));
 	}
 	else {
@@ -118,9 +126,9 @@ void move_right(vector<int> &state) {
 void move_up(vector<int> &state) {
 	int blank = find_blank(state);
 
-	/* IF blank space is NOT on left wall*/
+	/* IF blank space is NOT on top wall*/
 	if(!isTopWall(blank)) {
-		cout << "Moving up..." << endl;
+		cout << "\nMoving up..." << endl;
 		int index_above = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) - 1 ) + (blank % PUZZLE_WIDTH));
 		swap(state.at(blank), state.at(index_above));
 	}
@@ -135,9 +143,9 @@ void move_up(vector<int> &state) {
 void move_down(vector<int> &state) {
 	int blank = find_blank(state);
 
-	/* IF blank space is NOT on left wall*/
+	/* IF blank space is NOT on bottom wall*/
 	if(!isBottomWall(blank)) {
-		cout << "Moving down..." << endl;
+		cout << "\nMoving down..." << endl;
 		int index_below = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) + 1 ) + (blank % PUZZLE_WIDTH));
 		swap(state.at(blank), state.at(index_below));
 	}
@@ -153,7 +161,11 @@ void move_down(vector<int> &state) {
 void uniform_cost(vector<int> &state) {
 	move_up(state);
 	move_up(state);
-	move_up(state);
+	move_left(state);
+	move_left(state);
+	move_down(state);
+	move_down(state);
+	move_down(state);
 }
 
 
@@ -235,7 +247,7 @@ int choose_search() {
 	return algorithm_choice;
 }
 
-void print_menu() {
+void start() {
 	char userInput;
 	char newline = '\n';
 	cout << "Welcome to the 8-puzzle solver!" << endl;
@@ -247,7 +259,7 @@ void print_menu() {
 	else if (userInput == '\n') {
 		cout << endl;
 
-		vector<int> starting_state;
+		Puzzle P; /* Starting puzzle node */
 
 		int puzzleChoice;
 		cout << "Please choose from the following options." << endl;
@@ -259,13 +271,12 @@ void print_menu() {
 
 		if(puzzleChoice == 1) {
 			cout << endl;
-			starting_state = default_puzzle();
-			cout << "SIZE OF PUZZLE: " << starting_state.size() << endl << endl;
+			P.CURRENT_STATE = default_puzzle();
 		}
 		else if (puzzleChoice == 2) {
 			cout << endl;
-			starting_state = custom_puzzle();
-			cout << "SIZE OF PUZZLE: " << starting_state.size() << endl << endl;
+			P.CURRENT_STATE = custom_puzzle();
+			cout << "SIZE OF PUZZLE: " << P.CURRENT_STATE.size() << endl << endl;
 		}
 		else {
 			cout << "Please choose option '1' or '2'" << endl;
@@ -275,7 +286,7 @@ void print_menu() {
 		int search_choice = choose_search();
 		switch(search_choice) {
 			case 1:
-				uniform_cost(starting_state);
+				uniform_cost(P.CURRENT_STATE);
 				break;
 			case 2:
 				misplaced_tile();
@@ -293,6 +304,6 @@ void print_menu() {
 }
 
 int main() {
-	print_menu();
+	start();
 	return 0;
 }
