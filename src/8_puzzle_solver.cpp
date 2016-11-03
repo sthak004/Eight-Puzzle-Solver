@@ -1,3 +1,5 @@
+#include <cmath>
+#include <queue>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
@@ -14,6 +16,14 @@ struct Puzzle
 
 	int hn;
 	int gn;
+};
+
+
+class Cost_Comparator {
+public:
+	bool operator()(Puzzle &P1, Puzzle &P2){
+		return ( (P1.hn + P1.gn) > (P2.hn + P2.gn) );
+	}
 };
 
 
@@ -84,77 +94,72 @@ int find_blank(vector<int> &state) {
 }
 
 /* move blank space LEFT  */
-void move_left(vector<int> &state) {
-	int blank = find_blank(state);
+void move_left(Puzzle &P) {
+	int blank = find_blank(P.CURRENT_STATE);
 
 	/* IF blank space is NOT on left wall*/
 	if(!isLeftWall(blank)) {
 		cout << "\nMoving left..." << endl;
-		swap(state.at(blank), state.at(blank-1));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank-1));
 	}
 	else {
 		cout << endl << "Left wall, cannot move it." << endl;
 	}
-	print_vector(state);
+	print_vector(P.CURRENT_STATE);
 }
 
 
 /* move blank space RIGHT */
-void move_right(vector<int> &state) {
-	int blank = find_blank(state);
+void move_right(Puzzle &P) {
+	int blank = find_blank(P.CURRENT_STATE);
 
 	/* IF blank space is NOT on right wall*/
 	if(!isRightWall(blank)) {
 		cout << "\nMoving right..." << endl;
-		swap(state.at(blank), state.at(blank+1));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank+1));
 	}
 	else {
 		cout << endl << "Right wall, cannot move it." << endl;
 	}
-	print_vector(state);
+	print_vector(P.CURRENT_STATE);
 }
 
 
 /* move blank space UP */
-void move_up(vector<int> &state) {
-	int blank = find_blank(state);
+void move_up(Puzzle &P) {
+	int blank = find_blank(P.CURRENT_STATE);
 
 	/* IF blank space is NOT on top wall*/
 	if(!isTopWall(blank)) {
 		cout << "\nMoving up..." << endl;
 		int index_above = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) - 1 ) + (blank % PUZZLE_WIDTH));
-		swap(state.at(blank), state.at(index_above));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_above));
 	}
 	else {
 		cout << endl << "Top wall, cannot move it." << endl;
 	}
-	print_vector(state);
+	print_vector(P.CURRENT_STATE);
 }
 
 
 /* move blank space DOWN */
-void move_down(vector<int> &state) {
-	int blank = find_blank(state);
+void move_down(Puzzle &P) {
+	int blank = find_blank(P.CURRENT_STATE);
 
 	/* IF blank space is NOT on bottom wall*/
 	if(!isBottomWall(blank)) {
 		cout << "\nMoving down..." << endl;
 		int index_below = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) + 1 ) + (blank % PUZZLE_WIDTH));
-		swap(state.at(blank), state.at(index_below));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_below));
 	}
 	else {
 		cout << endl << "Bottom wall, cannot move it." << endl;
 	}
-	print_vector(state);
+	print_vector(P.CURRENT_STATE);
 }
 
 
 /* ----------------------------------------------------------------------------- */
-
-void uniform_cost(Puzzle &P) {
-	P.hn = 0;
-}
-
 
 void misplaced_tile(Puzzle &P) {
 	P.hn = 0;
@@ -172,8 +177,82 @@ void misplaced_tile(Puzzle &P) {
 
 
 void manhatatan_distance(Puzzle &P) {
-	cout << endl << "you chose manhatatan_distance" << endl;
+	P.hn = 0;
+	int x, y;
+	for(int index = 0; index < P.CURRENT_STATE.size(); index++) {
+		if(index == 0) {
+			x = 0;
+			y = 0;
+		}
+		else if(index == 1) {
+			x = 0;
+			y = 1;
+		}
+		else if(index == 2) {
+			x = 0;
+			y = 2;
+		}
+		else if(index == 3) {
+			x = 1;
+			y = 0;
+		}
+		else if(index == 4) {
+			x = 1;
+			y = 1;
+		}
+		else if(index == 5) {
+			x = 1;
+			y = 2;
+		}
+		else if(index == 6) {
+			x = 2;
+			y = 0;
+		}
+		else if(index == 7) {
+			x = 2;
+			y = 1;
+		}
+		else if(index == 8) {
+			x = 2;
+			y = 2;
+		}
+
+		int curr_value = P.CURRENT_STATE.at(index);
+		if(curr_value != 0) {
+			int goal_row = (curr_value - 1) / PUZZLE_WIDTH;
+			int goal_col = (curr_value - 1) % PUZZLE_WIDTH;
+			P.hn += abs(x - goal_row) + abs(y - goal_col);
+			}
+
+	}
+	cout << "manhatatan_distance: " << P.hn << endl;
 }
+
+
+void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Comparator> &nodes_queue)  {
+	/* CP = Child Puzzle */
+	Puzzle cp1;
+	Puzzle cp2;
+	Puzzle cp3;
+	Puzzle cp4;
+
+	/* Copy the puzzle's current state in 4 different puzzles */
+	cp1.CURRENT_STATE = puzzle.CURRENT_STATE;
+	cp2.CURRENT_STATE = puzzle.CURRENT_STATE;
+	cp3.CURRENT_STATE = puzzle.CURRENT_STATE;
+	cp4.CURRENT_STATE = puzzle.CURRENT_STATE;
+
+
+	/* find blank space */
+	find_blank(puzzle.CURRENT_STATE);
+
+
+	//IF STATEMENTS
+
+}
+
+
+
 
 /* ----------------------------------------------------------------------------- */
 
@@ -182,7 +261,7 @@ void manhatatan_distance(Puzzle &P) {
 vector<int> default_puzzle() {
 	/* dp = the default puzzle*/
 	// vector<int> dp = {1, 2, 3, 4, 5, 6, 7, 0, 8};
-	vector<int> dp = {2, 4, 1, 6, 8, 7, 5, 0, 3};
+	vector<int> dp = {3, 2, 8, 4, 5, 6, 7, 1, 0};
 	cout << "DEFAULT PUZZLE: " << endl;
 	print_vector(dp);
 	return dp;
@@ -284,7 +363,7 @@ void start() {
 		int search_choice = choose_search();
 		switch(search_choice) {
 			case 1:
-				uniform_cost(P);
+				P.hn = 0;
 				break;
 			case 2:
 				misplaced_tile(P);
@@ -298,7 +377,17 @@ void start() {
 				break;
 		}
 
-		//
+		priority_queue<Puzzle, vector<Puzzle>, Cost_Comparator> nodes_queue;
+
+
+		nodes_queue.push(P);
+
+		cout << endl << "Expanding...";
+		print_vector(P.CURRENT_STATE);
+
+		/*while(!nodes_queue.empty()) {
+
+		}*/
 
 	}
 }
