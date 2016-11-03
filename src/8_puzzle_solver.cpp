@@ -17,7 +17,6 @@ struct Puzzle
 };
 
 
-
 void print_v(vector<int> v) {
 	cout << endl;
 	for(int i = 0; i < v.size(); i++) {
@@ -41,7 +40,6 @@ void print_vector(vector<int> &arg) {
 }
 
 
-
 /* ----------------------------------------------------------------------------- */
 
 /* bp = position of blank*/
@@ -52,7 +50,6 @@ bool isLeftWall(int bp) {
 	else { return false; }
 }
 
-
 bool isRightWall(int bp) {
 	if(bp == 2 || bp == 5 || bp == 8) {
 		return true;
@@ -60,16 +57,12 @@ bool isRightWall(int bp) {
 	else {return false; }
 }
 
-
-
 bool isTopWall(int bp) {
 	if(bp == 0 || bp == 1 || bp == 2) {
 		return true;
 	}
 	else {return false; }
 }
-
-
 
 bool isBottomWall(int bp) {
 	if(bp == 6 || bp == 7 || bp == 8) {
@@ -158,23 +151,27 @@ void move_down(vector<int> &state) {
 
 /* ----------------------------------------------------------------------------- */
 
-void uniform_cost(vector<int> &state) {
-	move_up(state);
-	move_up(state);
-	move_left(state);
-	move_left(state);
-	move_down(state);
-	move_down(state);
-	move_down(state);
+void uniform_cost(Puzzle &P) {
+	P.hn = 0;
 }
 
 
-void misplaced_tile() {
-	cout << endl << "you chose misplaced_tile" << endl;
+void misplaced_tile(Puzzle &P) {
+	P.hn = 0;
+	if(P.CURRENT_STATE.at(0) != 1) { P.hn++; }
+	if(P.CURRENT_STATE.at(1) != 2) { P.hn++; }
+	if(P.CURRENT_STATE.at(2) != 3) { P.hn++; }
+	if(P.CURRENT_STATE.at(3) != 4) { P.hn++; }
+	if(P.CURRENT_STATE.at(4) != 5) { P.hn++; }
+	if(P.CURRENT_STATE.at(5) != 6) { P.hn++; }
+	if(P.CURRENT_STATE.at(6) != 7) { P.hn++; }
+	if(P.CURRENT_STATE.at(7) != 8) { P.hn++; }
+	//if(P.CURRENT_STATE.at(8) != 0) { P.hn++; }
+	cout << "Misplaced Heuristic: " << P.hn << endl;
 }
 
 
-void manhatatan_distance() {
+void manhatatan_distance(Puzzle &P) {
 	cout << endl << "you chose manhatatan_distance" << endl;
 }
 
@@ -184,7 +181,8 @@ void manhatatan_distance() {
 
 vector<int> default_puzzle() {
 	/* dp = the default puzzle*/
-	vector<int> dp = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+	// vector<int> dp = {1, 2, 3, 4, 5, 6, 7, 0, 8};
+	vector<int> dp = {2, 4, 1, 6, 8, 7, 5, 0, 3};
 	cout << "DEFAULT PUZZLE: " << endl;
 	print_vector(dp);
 	return dp;
@@ -286,19 +284,21 @@ void start() {
 		int search_choice = choose_search();
 		switch(search_choice) {
 			case 1:
-				uniform_cost(P.CURRENT_STATE);
+				uniform_cost(P);
 				break;
 			case 2:
-				misplaced_tile();
+				misplaced_tile(P);
 				break;
 			case 3:
-				manhatatan_distance();
+				manhatatan_distance(P);
 				break;
 			default:
 				cout << "\t\t***** ERROR *****" << endl;
 				cout << "\tBad input, quitting..." << endl;
 				break;
 		}
+
+		//
 
 	}
 }
