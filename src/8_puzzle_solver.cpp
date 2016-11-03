@@ -9,10 +9,14 @@ using namespace std;
 
 #define PUZZLE_WIDTH 3 /* DIMENSION OF PUZZLE (ex. 3 x 3) */
 
+
+int totalNodes = 0;
+int depth = 0;
+vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
+
 struct Puzzle 
 {
 	vector<int> CURRENT_STATE;
-	vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
 
 	int hn;
 	int gn;
@@ -25,6 +29,16 @@ public:
 		return ( (P1.hn + P1.gn) > (P2.hn + P2.gn) );
 	}
 };
+
+
+bool isGoalState(Puzzle &P) {
+	for(int i = 0; i < P.CURRENT_STATE.size(); i++) {
+		if(P.CURRENT_STATE.at(i) != GOAL_STATE.at(i)) {
+			return false;
+		}
+	}
+	return true;
+}
 
 
 void print_v(vector<int> v) {
@@ -93,71 +107,9 @@ int find_blank(vector<int> &state) {
 	}
 }
 
-/* move blank space LEFT  */
-void move_left(Puzzle &P) {
-	int blank = find_blank(P.CURRENT_STATE);
+/*void get_coordinates(int &x, int &y) {
 
-	/* IF blank space is NOT on left wall*/
-	if(!isLeftWall(blank)) {
-		cout << "\nMoving left..." << endl;
-		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank-1));
-	}
-	else {
-		cout << endl << "Left wall, cannot move it." << endl;
-	}
-	print_vector(P.CURRENT_STATE);
-}
-
-
-/* move blank space RIGHT */
-void move_right(Puzzle &P) {
-	int blank = find_blank(P.CURRENT_STATE);
-
-	/* IF blank space is NOT on right wall*/
-	if(!isRightWall(blank)) {
-		cout << "\nMoving right..." << endl;
-		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank+1));
-	}
-	else {
-		cout << endl << "Right wall, cannot move it." << endl;
-	}
-	print_vector(P.CURRENT_STATE);
-}
-
-
-/* move blank space UP */
-void move_up(Puzzle &P) {
-	int blank = find_blank(P.CURRENT_STATE);
-
-	/* IF blank space is NOT on top wall*/
-	if(!isTopWall(blank)) {
-		cout << "\nMoving up..." << endl;
-		int index_above = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) - 1 ) + (blank % PUZZLE_WIDTH));
-		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_above));
-	}
-	else {
-		cout << endl << "Top wall, cannot move it." << endl;
-	}
-	print_vector(P.CURRENT_STATE);
-}
-
-
-/* move blank space DOWN */
-void move_down(Puzzle &P) {
-	int blank = find_blank(P.CURRENT_STATE);
-
-	/* IF blank space is NOT on bottom wall*/
-	if(!isBottomWall(blank)) {
-		cout << "\nMoving down..." << endl;
-		int index_below = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) + 1 ) + (blank % PUZZLE_WIDTH));
-		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_below));
-	}
-	else {
-		cout << endl << "Bottom wall, cannot move it." << endl;
-	}
-	print_vector(P.CURRENT_STATE);
-}
-
+}/*
 
 /* ----------------------------------------------------------------------------- */
 
@@ -228,8 +180,122 @@ void manhatatan_distance(Puzzle &P) {
 	cout << "manhatatan_distance: " << P.hn << endl;
 }
 
+/* ----------------------------------------------------------------------------- */
 
-void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Comparator> &nodes_queue)  {
+/* Operators */
+
+/* move blank space LEFT  */
+Puzzle move_left(Puzzle &P, int choice) {
+	int blank = find_blank(P.CURRENT_STATE);
+
+	/* IF blank space is NOT on left wall*/
+	if(!isLeftWall(blank)) {
+		cout << "\nMoving left..." << endl;
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank-1));
+	}
+	else {
+		cout << endl << "Left wall, cannot move it." << endl;
+	}
+
+	P.gn += 1;
+
+	if(choice == 1) { P.hn = 0; }
+	if(choice == 2) { misplaced_tile(P); }
+	if(choice == 3) { manhatatan_distance(P); }
+
+	totalNodes++;
+
+	print_vector(P.CURRENT_STATE);
+	return P;
+}
+
+
+/* move blank space RIGHT */
+Puzzle move_right(Puzzle &P, int choice) {
+	int blank = find_blank(P.CURRENT_STATE);
+
+	/* IF blank space is NOT on right wall*/
+	if(!isRightWall(blank)) {
+		cout << "\nMoving right..." << endl;
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank+1));
+	}
+	else {
+		cout << endl << "Right wall, cannot move it." << endl;
+	}
+
+	P.gn += 1;
+
+	if(choice == 1) { P.hn = 0; }
+	if(choice == 2) { misplaced_tile(P); }
+	if(choice == 3) { manhatatan_distance(P); }
+
+	totalNodes++;
+
+	print_vector(P.CURRENT_STATE);
+	return P;
+}
+
+
+/* move blank space UP */
+Puzzle move_up(Puzzle &P, int choice) {
+	int blank = find_blank(P.CURRENT_STATE);
+
+	/* IF blank space is NOT on top wall*/
+	if(!isTopWall(blank)) {
+		cout << "\nMoving up..." << endl;
+		int index_above = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) - 1 ) + (blank % PUZZLE_WIDTH));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_above));
+	}
+	else {
+		cout << endl << "Top wall, cannot move it." << endl;
+	}
+
+	P.gn += 1;
+
+	if(choice == 1) { P.hn = 0; }
+	if(choice == 2) { misplaced_tile(P); }
+	if(choice == 3) { manhatatan_distance(P); }
+
+	totalNodes++;
+
+	print_vector(P.CURRENT_STATE);
+	return P;
+	
+}
+
+/* move blank space DOWN */
+Puzzle move_down(Puzzle &P, int choice) {
+	int blank = find_blank(P.CURRENT_STATE);
+
+	/* IF blank space is NOT on bottom wall*/
+	if(!isBottomWall(blank)) {
+		cout << "\nMoving down..." << endl;
+		int index_below = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) + 1 ) + (blank % PUZZLE_WIDTH));
+		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_below));
+	}
+	else {
+		cout << endl << "Bottom wall, cannot move it." << endl;
+	}
+
+	P.gn += 1;
+
+	if(choice == 1) { P.hn = 0; }
+	if(choice == 2) { misplaced_tile(P); }
+	if(choice == 3) { manhatatan_distance(P); }
+
+	totalNodes++;
+
+	print_vector(P.CURRENT_STATE);
+	return P;
+	
+}
+
+
+
+/* ----------------------------------------------------------------------------- */
+
+
+void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Comparator> &nodes_queue, int choice)  {
 	/* CP = Child Puzzle */
 	Puzzle cp1;
 	Puzzle cp2;
@@ -244,17 +310,70 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 
 	/* find blank space */
-	find_blank(puzzle.CURRENT_STATE);
+	int blank_position = find_blank(puzzle.CURRENT_STATE);
 
 
-	//IF STATEMENTS
+	/* depending on location of blank, move the blank in each created child node */
 
+	/* TOP LEFT*/
+	if(blank_position = 0) {
+		nodes_queue.push(move_right(cp1, choice));	
+		nodes_queue.push(move_down(cp2, choice));
+	}
+	/* TOP MIDDLE*/
+	else if(blank_position == 1) {
+		nodes_queue.push(move_left(cp1, choice));
+		nodes_queue.push(move_down(cp2, choice));
+		nodes_queue.push(move_right(cp3, choice));
+	}
+	/* TOP RIGHT */
+	else if(blank_position == 2) {
+		nodes_queue.push(move_left(cp1, choice));
+		nodes_queue.push(move_down(cp2, choice));
+	}
+	/* MIDDLE LEFT */
+	else if(blank_position == 3) {
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_down(cp2, choice));
+		nodes_queue.push(move_right(cp3, choice));
+	}
+	/* CENTER */
+	else if(blank_position == 4) {
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_right(cp2, choice));
+		nodes_queue.push(move_down(cp3, choice));
+		nodes_queue.push(move_left(cp4, choice));
+
+	}
+	/* MIDDLE RIGHT */
+	else if(blank_position == 5) {
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_left(cp2, choice));
+		nodes_queue.push(move_down(cp3, choice));
+	}
+	/* BOTTOM LEFT */
+	else if(blank_position == 6) {
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_right(cp2, choice));
+	}
+	/* BOTTOM MIDDLE */
+	else if(blank_position == 7) {
+		nodes_queue.push(move_left(cp1, choice));
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_right(cp1, choice));
+
+	}
+	/* BOTTOM RIGHT */
+	else if(blank_position == 8) {
+		nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_left(cp1, choice));
+	}
 }
 
 
-
-
 /* ----------------------------------------------------------------------------- */
+
+
 
 
 
@@ -324,6 +443,7 @@ int choose_search() {
 	return algorithm_choice;
 }
 
+
 void start() {
 	char userInput;
 	char newline = '\n';
@@ -361,7 +481,7 @@ void start() {
 		}
 
 		int search_choice = choose_search();
-		switch(search_choice) {
+		/*switch(search_choice) {
 			case 1:
 				P.hn = 0;
 				break;
@@ -375,19 +495,45 @@ void start() {
 				cout << "\t\t***** ERROR *****" << endl;
 				cout << "\tBad input, quitting..." << endl;
 				break;
-		}
+		}*/
+		if(search_choice == 1) { P.hn = 0; }
+		else if(search_choice == 1) { misplaced_tile(P); }
+		else if(search_choice == 1) { manhatatan_distance(P); }
+
 
 		priority_queue<Puzzle, vector<Puzzle>, Cost_Comparator> nodes_queue;
 
+
+		int max_nodes_in_queue = 0;
 
 		nodes_queue.push(P);
 
 		cout << endl << "Expanding...";
 		print_vector(P.CURRENT_STATE);
 
-		/*while(!nodes_queue.empty()) {
+		while(!nodes_queue.empty()) {
+			if(isGoalState) {
+				cout <<  "GOAL!!!" << endl << endl;
+				cout << "To solve this problem the search algorithm expanded a total of "
+				     << totalNodes << ".\n";
+				cout << "The maximum number of nodes in the queue at any one time was "
+					 << max_nodes_in_queue << ".\n";
+				cout << "The depth of the goal node was " << P.gn << ".\n";
+				return;
+			}
 
-		}*/
+
+			expand_puzzle(P, nodes_queue, search_choice);
+
+		
+			int currMaxQueue = nodes_queue.size();
+			max_nodes_in_queue = max(max_nodes_in_queue, currMaxQueue);
+
+			cout << "The best state to expand with g(n)=" << nodes_queue.top().gn << " and h(n)=" << nodes_queue.top().hn << " is..." << endl;
+
+			print_vector(P.CURRENT_STATE);
+			cout << endl << "Expanding...";
+		}
 
 	}
 }
