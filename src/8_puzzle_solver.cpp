@@ -308,56 +308,114 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 	/* TOP LEFT*/
 	if(blank_position == 0) {
-		nodes_queue.push(move_right(cp1, choice));	
-		nodes_queue.push(move_down(cp2, choice));
+		/*nodes_queue.push(move_right(cp1, choice));
+		nodes_queue.push(move_left(cp2, choice)); */
+		cp1 = move_right(cp1, choice);
+		cp2 = move_left(cp2, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
 	}
 	/* TOP MIDDLE*/
 	else if(blank_position == 1) {
-		nodes_queue.push(move_left(cp1, choice));
+		/*nodes_queue.push(move_left(cp1, choice));
 		nodes_queue.push(move_down(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice));
+		nodes_queue.push(move_right(cp3, choice)); */
+		cp1 = move_left(cp1, choice);
+		cp2 = move_down(cp2, choice);
+		cp3 = move_right(cp3, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
 	}
 	/* TOP RIGHT */
 	else if(blank_position == 2) {
-		nodes_queue.push(move_left(cp1, choice));
-		nodes_queue.push(move_down(cp2, choice));
+		/* nodes_queue.push(move_left(cp1, choice));
+		nodes_queue.push(move_down(cp2, choice)); */
+		cp1 = move_left(cp1, choice);
+		cp2 = move_down(cp2, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
 	}
 	/* MIDDLE LEFT */
 	else if(blank_position == 3) {
-		nodes_queue.push(move_up(cp1, choice));
+		/* nodes_queue.push(move_up(cp1, choice));
 		nodes_queue.push(move_down(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice));
+		nodes_queue.push(move_right(cp3, choice)); */
+
+		cp1 = move_up(cp1, choice);
+		cp2 = move_down(cp2, choice);
+		cp3 = move_right(cp3, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
 	}
 	/* CENTER */
 	else if(blank_position == 4) {
-		nodes_queue.push(move_up(cp1, choice));
+		/* nodes_queue.push(move_up(cp1, choice));
 		nodes_queue.push(move_right(cp2, choice));
 		nodes_queue.push(move_down(cp3, choice));
-		nodes_queue.push(move_left(cp4, choice));
+		nodes_queue.push(move_left(cp4, choice)); */
 
+
+		cp1 = move_up(cp1, choice);
+		cp2 = move_right(cp2, choice);
+		cp3 = move_down(cp3, choice);
+		cp4 = move_left(cp3, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
+		if(cp4.isVisted == false) { nodes_queue.push(cp3); }
 	}
 	/* MIDDLE RIGHT */
 	else if(blank_position == 5) {
-		nodes_queue.push(move_up(cp1, choice));
+		/*nodes_queue.push(move_up(cp1, choice));
 		nodes_queue.push(move_left(cp2, choice));
-		nodes_queue.push(move_down(cp3, choice));
+		nodes_queue.push(move_down(cp3, choice)); */
+
+
+		cp1 = move_up(cp1, choice);
+		cp3 = move_left(cp2, choice);
+		cp4 = move_down(cp3, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
 	}
 	/* BOTTOM LEFT */
 	else if(blank_position == 6) {
-		nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_right(cp2, choice));
+		/* nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_right(cp2, choice)); */
+
+
+		cp1 = move_up(cp1, choice);
+		cp2 = move_right(cp2, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
 	}
 	/* BOTTOM MIDDLE */
 	else if(blank_position == 7) {
-		nodes_queue.push(move_left(cp1, choice));
+		/* nodes_queue.push(move_left(cp1, choice));
 		nodes_queue.push(move_up(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice));
+		nodes_queue.push(move_right(cp3, choice)); */
+
+
+		cp1 = move_left(cp1, choice);
+		cp2 = move_up(cp2, choice);
+		cp3 = move_down(cp3, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
 
 	}
 	/* BOTTOM RIGHT */
 	else if(blank_position == 8) {
-		nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_left(cp2, choice));
+		/* nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_left(cp2, choice)); */
+
+
+		cp1 = move_up(cp1, choice);
+		cp2 = move_left(cp2, choice);
+		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
+		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
 	}
 }
 
