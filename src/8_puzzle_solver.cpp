@@ -125,7 +125,6 @@ void misplaced_tile(Puzzle &P) {
 	if(P.CURRENT_STATE.at(6) != 7) { P.hn++; }
 	if(P.CURRENT_STATE.at(7) != 8) { P.hn++; }
 	//if(P.CURRENT_STATE.at(8) != 0) { P.hn++; }
-	cout << "Misplaced Heuristic: " << P.hn << endl;
 }
 
 
@@ -204,7 +203,6 @@ Puzzle move_left(Puzzle &P, int choice) {
 
 	totalNodes++;
 
-	print_vector(P.CURRENT_STATE);
 	return P;
 }
 
@@ -229,7 +227,6 @@ Puzzle move_right(Puzzle &P, int choice) {
 
 	totalNodes++;
 
-	print_vector(P.CURRENT_STATE);
 	return P;
 }
 
@@ -255,7 +252,6 @@ Puzzle move_up(Puzzle &P, int choice) {
 
 	totalNodes++;
 
-	print_vector(P.CURRENT_STATE);
 	return P;
 	
 }
@@ -281,7 +277,6 @@ Puzzle move_down(Puzzle &P, int choice) {
 
 	totalNodes++;
 
-	print_vector(P.CURRENT_STATE);
 	return P;
 	
 }
