@@ -16,6 +16,7 @@ vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
 
 struct Puzzle 
 {
+	Puzzle() : hn(0), gn(0){}
 	vector<int> CURRENT_STATE;
 
 	int hn;
@@ -174,10 +175,9 @@ void manhatatan_distance(Puzzle &P) {
 			int goal_row = (curr_value - 1) / PUZZLE_WIDTH;
 			int goal_col = (curr_value - 1) % PUZZLE_WIDTH;
 			P.hn += abs(x - goal_row) + abs(y - goal_col);
-			}
+		}
 
 	}
-	cout << "manhatatan_distance: " << P.hn << endl;
 }
 
 /* ----------------------------------------------------------------------------- */
@@ -190,7 +190,6 @@ Puzzle move_left(Puzzle &P, int choice) {
 
 	/* IF blank space is NOT on left wall*/
 	if(!isLeftWall(blank)) {
-		cout << "\nMoving left..." << endl;
 		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank-1));
 	}
 	else {
@@ -216,7 +215,6 @@ Puzzle move_right(Puzzle &P, int choice) {
 
 	/* IF blank space is NOT on right wall*/
 	if(!isRightWall(blank)) {
-		cout << "\nMoving right..." << endl;
 		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(blank+1));
 	}
 	else {
@@ -242,7 +240,6 @@ Puzzle move_up(Puzzle &P, int choice) {
 
 	/* IF blank space is NOT on top wall*/
 	if(!isTopWall(blank)) {
-		cout << "\nMoving up..." << endl;
 		int index_above = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) - 1 ) + (blank % PUZZLE_WIDTH));
 		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_above));
 	}
@@ -269,7 +266,6 @@ Puzzle move_down(Puzzle &P, int choice) {
 
 	/* IF blank space is NOT on bottom wall*/
 	if(!isBottomWall(blank)) {
-		cout << "\nMoving down..." << endl;
 		int index_below = (PUZZLE_WIDTH * ((blank/PUZZLE_WIDTH) + 1 ) + (blank % PUZZLE_WIDTH));
 		swap(P.CURRENT_STATE.at(blank), P.CURRENT_STATE.at(index_below));
 	}
@@ -312,11 +308,10 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	/* find blank space */
 	int blank_position = find_blank(puzzle.CURRENT_STATE);
 
-
 	/* depending on location of blank, move the blank in each created child node */
 
 	/* TOP LEFT*/
-	if(blank_position = 0) {
+	if(blank_position == 0) {
 		nodes_queue.push(move_right(cp1, choice));	
 		nodes_queue.push(move_down(cp2, choice));
 	}
@@ -359,14 +354,14 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	/* BOTTOM MIDDLE */
 	else if(blank_position == 7) {
 		nodes_queue.push(move_left(cp1, choice));
-		nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_right(cp1, choice));
+		nodes_queue.push(move_up(cp2, choice));
+		nodes_queue.push(move_right(cp3, choice));
 
 	}
 	/* BOTTOM RIGHT */
 	else if(blank_position == 8) {
 		nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_left(cp1, choice));
+		nodes_queue.push(move_left(cp2, choice));
 	}
 }
 
@@ -380,7 +375,7 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 vector<int> default_puzzle() {
 	/* dp = the default puzzle*/
 	// vector<int> dp = {1, 2, 3, 4, 5, 6, 7, 0, 8};
-	vector<int> dp = {3, 2, 8, 4, 5, 6, 7, 1, 0};
+	vector<int> dp = {1, 2, 3, 4, 8, 0, 7, 6, 5};
 	cout << "DEFAULT PUZZLE: " << endl;
 	print_vector(dp);
 	return dp;
@@ -473,7 +468,6 @@ void start() {
 		else if (puzzleChoice == 2) {
 			cout << endl;
 			P.CURRENT_STATE = custom_puzzle();
-			cout << "SIZE OF PUZZLE: " << P.CURRENT_STATE.size() << endl << endl;
 		}
 		else {
 			cout << "Please choose option '1' or '2'" << endl;
@@ -481,25 +475,10 @@ void start() {
 		}
 
 		int search_choice = choose_search();
-		/*switch(search_choice) {
-			case 1:
-				P.hn = 0;
-				break;
-			case 2:
-				misplaced_tile(P);
-				break;
-			case 3:
-				manhatatan_distance(P);
-				break;
-			default:
-				cout << "\t\t***** ERROR *****" << endl;
-				cout << "\tBad input, quitting..." << endl;
-				break;
-		}*/
-		if(search_choice == 1) { P.hn = 0; }
-		else if(search_choice == 1) { misplaced_tile(P); }
-		else if(search_choice == 1) { manhatatan_distance(P); }
 
+		if(search_choice == 1) { P.hn = 0; }
+		else if(search_choice == 2) { misplaced_tile(P); }
+		else if(search_choice == 3) { manhatatan_distance(P); }
 
 		priority_queue<Puzzle, vector<Puzzle>, Cost_Comparator> nodes_queue;
 
@@ -512,18 +491,26 @@ void start() {
 		print_vector(P.CURRENT_STATE);
 
 		while(!nodes_queue.empty()) {
-			if(isGoalState) {
-				cout <<  "GOAL!!!" << endl << endl;
+
+			Puzzle temp;
+
+
+			temp = nodes_queue.top();
+			nodes_queue.pop();
+
+			if(isGoalState(temp)) {
+				cout << endl << "GOAL!!!";
+				print_vector(temp.CURRENT_STATE);
 				cout << "To solve this problem the search algorithm expanded a total of "
-				     << totalNodes << ".\n";
+				     << totalNodes << " nodes.\n";
 				cout << "The maximum number of nodes in the queue at any one time was "
 					 << max_nodes_in_queue << ".\n";
-				cout << "The depth of the goal node was " << P.gn << ".\n";
+				cout << "The depth of the goal node was " << temp.gn << ".\n";
 				return;
 			}
 
 
-			expand_puzzle(P, nodes_queue, search_choice);
+			expand_puzzle(temp, nodes_queue, search_choice);
 
 		
 			int currMaxQueue = nodes_queue.size();
@@ -531,11 +518,12 @@ void start() {
 
 			cout << "The best state to expand with g(n)=" << nodes_queue.top().gn << " and h(n)=" << nodes_queue.top().hn << " is..." << endl;
 
-			print_vector(P.CURRENT_STATE);
-			cout << endl << "Expanding...";
+			print_vector(temp.CURRENT_STATE);
+			cout << endl << "Expanding..." << endl << endl;
 		}
 
 	}
+	return;
 }
 
 int main() {
