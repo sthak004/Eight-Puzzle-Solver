@@ -299,10 +299,10 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	Puzzle cp4;
 
 	/* Copy the puzzle's current state in 4 different puzzles */
-	cp1.CURRENT_STATE = puzzle.CURRENT_STATE;
-	cp2.CURRENT_STATE = puzzle.CURRENT_STATE;
-	cp3.CURRENT_STATE = puzzle.CURRENT_STATE;
-	cp4.CURRENT_STATE = puzzle.CURRENT_STATE;
+	cp1 = puzzle;
+	cp2 = puzzle;
+	cp3 = puzzle;
+	cp4 = puzzle;
 
 
 	/* find blank space */
