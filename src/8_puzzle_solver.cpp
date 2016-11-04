@@ -16,11 +16,12 @@ vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
 
 struct Puzzle 
 {
-	Puzzle() : hn(0), gn(0){}
+	Puzzle() : hn(0), gn(0), isVisted(false){}
 	vector<int> CURRENT_STATE;
 
 	int hn;
 	int gn;
+	bool isVisted;
 };
 
 
@@ -471,15 +472,17 @@ void start() {
 
 		int search_choice = choose_search();
 
-		if(search_choice == 1) { P.hn = 0; }
+		/*if(search_choice == 1) { P.hn = 0; }
 		else if(search_choice == 2) { misplaced_tile(P); }
-		else if(search_choice == 3) { manhatatan_distance(P); }
+		else if(search_choice == 3) { manhatatan_distance(P); }*/
 
 		priority_queue<Puzzle, vector<Puzzle>, Cost_Comparator> nodes_queue;
 
 
 		int max_nodes_in_queue = 0;
 
+
+		P.isVisted = true;
 		nodes_queue.push(P);
 
 		cout << endl << "Expanding...";
@@ -487,25 +490,29 @@ void start() {
 
 		while(!nodes_queue.empty()) {
 
-			Puzzle temp;
+			if(nodes_queue.empty()) {
+				cout << "FAILURE: This puzzle is unsolvable" << endl;
+				cout << ":(((" << endl;
+				break;
+			}
 
 
-			temp = nodes_queue.top();
+			P = nodes_queue.top();
 			nodes_queue.pop();
 
-			if(isGoalState(temp)) {
+			if(isGoalState(P)) {
 				cout << endl << "GOAL!!!";
-				print_vector(temp.CURRENT_STATE);
+				print_vector(P.CURRENT_STATE);
 				cout << "To solve this problem the search algorithm expanded a total of "
 				     << totalNodes << " nodes.\n";
 				cout << "The maximum number of nodes in the queue at any one time was "
 					 << max_nodes_in_queue << ".\n";
-				cout << "The depth of the goal node was " << temp.gn << ".\n";
+				cout << "The depth of the goal node was " << P.gn << ".\n";
 				return;
 			}
 
 
-			expand_puzzle(temp, nodes_queue, search_choice);
+			expand_puzzle(P, nodes_queue, search_choice);
 
 		
 			int currMaxQueue = nodes_queue.size();
@@ -513,7 +520,7 @@ void start() {
 
 			cout << "The best state to expand with g(n)=" << nodes_queue.top().gn << " and h(n)=" << nodes_queue.top().hn << " is..." << endl;
 
-			print_vector(temp.CURRENT_STATE);
+			print_vector(P.CURRENT_STATE);
 			cout << endl << "Expanding..." << endl << endl;
 		}
 
