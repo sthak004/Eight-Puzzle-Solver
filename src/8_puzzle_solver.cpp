@@ -70,33 +70,33 @@ void print_vector(vector<int> &arg) {
 
 /* ----------------------------------------------------------------------------- */
 
-/* bp = position of blank*/
+/* bp = blank position */
 bool isLeftWall(int bp) {	
 	if(bp == 0 || bp == 3 || bp == 6) {
 		return true;
 	}
-	else { return false; }
+	return false;
 }
 
 bool isRightWall(int bp) {
 	if(bp == 2 || bp == 5 || bp == 8) {
 		return true;
 	}
-	else {return false; }
+	return false;
 }
 
 bool isTopWall(int bp) {
 	if(bp == 0 || bp == 1 || bp == 2) {
 		return true;
 	}
-	else {return false; }
+	return false;
 }
 
 bool isBottomWall(int bp) {
 	if(bp == 6 || bp == 7 || bp == 8) {
 		return true;
 	}
-	else {return false; }
+	return false;
 }
 
 
@@ -111,9 +111,6 @@ int find_blank(vector<int> &state) {
 	}
 }
 
-/*void get_coordinates(int &x, int &y) {
-
-}/*
 
 /* ----------------------------------------------------------------------------- */
 
@@ -311,7 +308,6 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	cp3 = puzzle;
 	cp4 = puzzle;
 
-	/* BUGGGUWG#GURG@UG@UG@UGUUU Makes copy but copies over isVisited*/
 
 	/* find blank space */
 	int blank_position = find_blank(puzzle.CURRENT_STATE);
@@ -320,21 +316,18 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 	/* TOP LEFT*/
 	if(blank_position == 0) {
-		/* nodes_queue.push(move_right(cp1, choice));
-		nodes_queue.push(move_left(cp2, choice)); */
+		// nodes_queue.push(move_right(cp1, choice));
+		// nodes_queue.push(move_left(cp2, choice));
 		cp1 = move_right(cp1, choice);
-		cp2 = move_left(cp2, choice);
-		if(!checkIfVisited(cp1, visited_puzzles)) { 
-			nodes_queue.push(cp1);
-			visited_puzzles.push_back(cp1);
-		}
+		cp2 = move_down(cp2, choice);
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
 		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 	}
 	/* TOP MIDDLE*/
 	else if(blank_position == 1) {
-		/* nodes_queue.push(move_left(cp1, choice));
-		nodes_queue.push(move_down(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice));*/
+		// nodes_queue.push(move_left(cp1, choice));
+		// nodes_queue.push(move_down(cp2, choice));
+		// nodes_queue.push(move_right(cp3, choice));
 		cp1 = move_left(cp1, choice);
 		cp2 = move_down(cp2, choice);
 		cp3 = move_right(cp3, choice);
@@ -344,8 +337,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* TOP RIGHT */
 	else if(blank_position == 2) {
-		/* nodes_queue.push(move_left(cp1, choice));
-		nodes_queue.push(move_down(cp2, choice)); */
+		// nodes_queue.push(move_left(cp1, choice));
+		// nodes_queue.push(move_down(cp2, choice));
 		cp1 = move_left(cp1, choice);
 		cp2 = move_down(cp2, choice);
 		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
@@ -353,9 +346,9 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* MIDDLE LEFT */
 	else if(blank_position == 3) {
-		/* nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_down(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice)); */
+		// nodes_queue.push(move_up(cp1, choice));
+		// nodes_queue.push(move_down(cp2, choice));
+		// nodes_queue.push(move_right(cp3, choice));
 
 		cp1 = move_up(cp1, choice);
 		cp2 = move_down(cp2, choice);
@@ -366,10 +359,10 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* CENTER */
 	else if(blank_position == 4) {
-		/* nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_right(cp2, choice));
-		nodes_queue.push(move_down(cp3, choice));
-		nodes_queue.push(move_left(cp4, choice));*/
+		// nodes_queue.push(move_up(cp1, choice));
+		// nodes_queue.push(move_right(cp2, choice));
+		// nodes_queue.push(move_down(cp3, choice));
+		// nodes_queue.push(move_left(cp4, choice));
 
 
 		cp1 = move_up(cp1, choice);
@@ -383,9 +376,9 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* MIDDLE RIGHT */
 	else if(blank_position == 5) {
-		nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_left(cp2, choice));
-		nodes_queue.push(move_down(cp3, choice));
+		// nodes_queue.push(move_up(cp1, choice));
+		// nodes_queue.push(move_left(cp2, choice));
+		// nodes_queue.push(move_down(cp3, choice));
 
 		cp1 = move_up(cp1, choice);
 		cp2 = move_left(cp2, choice);
@@ -396,8 +389,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* BOTTOM LEFT */
 	else if(blank_position == 6) {
-		/* nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_right(cp2, choice)); */
+		// nodes_queue.push(move_up(cp1, choice));
+		// nodes_queue.push(move_right(cp2, choice));
 
 
 		cp1 = move_up(cp1, choice);
@@ -407,14 +400,15 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* BOTTOM MIDDLE */
 	else if(blank_position == 7) {
-		/* nodes_queue.push(move_left(cp1, choice));
-		nodes_queue.push(move_up(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice)); */
+		// nodes_queue.push(move_left(cp1, choice));
+		// nodes_queue.push(move_up(cp2, choice));
+		// nodes_queue.push(move_right(cp3, choice));
 
 
 		cp1 = move_left(cp1, choice);
 		cp2 = move_up(cp2, choice);
-		cp3 = move_down(cp3, choice);
+		cp3 = move_right(cp3, choice);
+
 		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
 		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
@@ -422,8 +416,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	}
 	/* BOTTOM RIGHT */
 	else if(blank_position == 8) {
-		/* nodes_queue.push(move_up(cp1, choice));
-		nodes_queue.push(move_left(cp2, choice)); */
+		// nodes_queue.push(move_up(cp1, choice));
+		// nodes_queue.push(move_left(cp2, choice));
 
 
 		cp1 = move_up(cp1, choice);
@@ -442,7 +436,6 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 vector<int> default_puzzle() {
 	/* dp = the default puzzle*/
-	// vector<int> dp = {1, 2, 3, 4, 5, 6, 7, 0, 8};
 	vector<int> dp = {1, 2, 3, 4, 8, 0, 7, 6, 5};
 	cout << "DEFAULT PUZZLE: " << endl;
 	print_vector(dp);
@@ -558,16 +551,13 @@ void start() {
 		//mark it as visited
 		visited_puzzles.push_back(P);
 
-		cout << endl << "Expanding...";
-		print_vector(P.CURRENT_STATE);
-
 		while(!nodes_queue.empty()) {
 
-			if(nodes_queue.empty()) {
-				cout << "FAILURE: This puzzle is unsolvable" << endl;
-				cout << ":(((" << endl;
-				break;
-			}
+			// if(nodes_queue.empty()) {
+			// 	cout << "FAILURE: This puzzle is unsolvable" << endl;
+			// 	cout << ":(((" << endl;
+			// 	break;
+			// }
 
 			Puzzle temp;
 			temp = nodes_queue.top();
