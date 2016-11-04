@@ -16,14 +16,16 @@ vector<int> GOAL_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0}; /* GOAL STATE */
 
 struct Puzzle 
 {
-	Puzzle() : hn(0), gn(0), isVisted(false){}
+	Puzzle() : hn(0), gn(0){}
 	vector<int> CURRENT_STATE;
 
 	int hn;
 	int gn;
-	bool isVisted;
+
 };
 
+
+vector<Puzzle> visited_puzzles;
 
 class Cost_Comparator {
 public:
@@ -286,6 +288,15 @@ Puzzle move_down(Puzzle &P, int choice) {
 
 /* ----------------------------------------------------------------------------- */
 
+bool checkIfVisited(Puzzle &P, vector<Puzzle> &visited) {
+	for(int i = 0; i < visited.size(); i++) {
+		if(visited.at(i).CURRENT_STATE == P.CURRENT_STATE) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Comparator> &nodes_queue, int choice)  {
 	/* CP = Child Puzzle */
@@ -300,6 +311,7 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 	cp3 = puzzle;
 	cp4 = puzzle;
 
+	/* BUGGGUWG#GURG@UG@UG@UGUUU Makes copy but copies over isVisited*/
 
 	/* find blank space */
 	int blank_position = find_blank(puzzle.CURRENT_STATE);
@@ -308,24 +320,27 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 	/* TOP LEFT*/
 	if(blank_position == 0) {
-		/*nodes_queue.push(move_right(cp1, choice));
+		/* nodes_queue.push(move_right(cp1, choice));
 		nodes_queue.push(move_left(cp2, choice)); */
 		cp1 = move_right(cp1, choice);
 		cp2 = move_left(cp2, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { 
+			nodes_queue.push(cp1);
+			visited_puzzles.push_back(cp1);
+		}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 	}
 	/* TOP MIDDLE*/
 	else if(blank_position == 1) {
-		/*nodes_queue.push(move_left(cp1, choice));
+		/* nodes_queue.push(move_left(cp1, choice));
 		nodes_queue.push(move_down(cp2, choice));
-		nodes_queue.push(move_right(cp3, choice)); */
+		nodes_queue.push(move_right(cp3, choice));*/
 		cp1 = move_left(cp1, choice);
 		cp2 = move_down(cp2, choice);
 		cp3 = move_right(cp3, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
-		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
+		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
 	}
 	/* TOP RIGHT */
 	else if(blank_position == 2) {
@@ -333,8 +348,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 		nodes_queue.push(move_down(cp2, choice)); */
 		cp1 = move_left(cp1, choice);
 		cp2 = move_down(cp2, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 	}
 	/* MIDDLE LEFT */
 	else if(blank_position == 3) {
@@ -345,40 +360,39 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 		cp1 = move_up(cp1, choice);
 		cp2 = move_down(cp2, choice);
 		cp3 = move_right(cp3, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
-		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
+		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
 	}
 	/* CENTER */
 	else if(blank_position == 4) {
 		/* nodes_queue.push(move_up(cp1, choice));
 		nodes_queue.push(move_right(cp2, choice));
 		nodes_queue.push(move_down(cp3, choice));
-		nodes_queue.push(move_left(cp4, choice)); */
+		nodes_queue.push(move_left(cp4, choice));*/
 
 
 		cp1 = move_up(cp1, choice);
 		cp2 = move_right(cp2, choice);
 		cp3 = move_down(cp3, choice);
-		cp4 = move_left(cp3, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
-		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
-		if(cp4.isVisted == false) { nodes_queue.push(cp3); }
+		cp4 = move_left(cp4, choice);
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
+		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
+		if(!checkIfVisited(cp4, visited_puzzles)) { nodes_queue.push(cp4); visited_puzzles.push_back(cp4);}
 	}
 	/* MIDDLE RIGHT */
 	else if(blank_position == 5) {
-		/*nodes_queue.push(move_up(cp1, choice));
+		nodes_queue.push(move_up(cp1, choice));
 		nodes_queue.push(move_left(cp2, choice));
-		nodes_queue.push(move_down(cp3, choice)); */
-
+		nodes_queue.push(move_down(cp3, choice));
 
 		cp1 = move_up(cp1, choice);
-		cp3 = move_left(cp2, choice);
-		cp4 = move_down(cp3, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
-		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
+		cp2 = move_left(cp2, choice);
+		cp3 = move_down(cp3, choice);
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
+		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
 	}
 	/* BOTTOM LEFT */
 	else if(blank_position == 6) {
@@ -388,8 +402,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 		cp1 = move_up(cp1, choice);
 		cp2 = move_right(cp2, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 	}
 	/* BOTTOM MIDDLE */
 	else if(blank_position == 7) {
@@ -401,9 +415,9 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 		cp1 = move_left(cp1, choice);
 		cp2 = move_up(cp2, choice);
 		cp3 = move_down(cp3, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
-		if(cp3.isVisted == false) { nodes_queue.push(cp3); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
+		if(!checkIfVisited(cp3, visited_puzzles)) { nodes_queue.push(cp3); visited_puzzles.push_back(cp3);}
 
 	}
 	/* BOTTOM RIGHT */
@@ -414,8 +428,8 @@ void expand_puzzle(Puzzle &puzzle, priority_queue<Puzzle,vector<Puzzle>, Cost_Co
 
 		cp1 = move_up(cp1, choice);
 		cp2 = move_left(cp2, choice);
-		if(cp1.isVisted == false) { nodes_queue.push(cp1); }
-		if(cp2.isVisted == false) { nodes_queue.push(cp2); }
+		if(!checkIfVisited(cp1, visited_puzzles)) { nodes_queue.push(cp1); visited_puzzles.push_back(cp1);}
+		if(!checkIfVisited(cp2, visited_puzzles)) { nodes_queue.push(cp2); visited_puzzles.push_back(cp2);}
 	}
 }
 
@@ -540,8 +554,9 @@ void start() {
 		int max_nodes_in_queue = 0;
 
 
-		P.isVisted = true;
 		nodes_queue.push(P);
+		//mark it as visited
+		visited_puzzles.push_back(P);
 
 		cout << endl << "Expanding...";
 		print_vector(P.CURRENT_STATE);
@@ -554,23 +569,24 @@ void start() {
 				break;
 			}
 
+			Puzzle temp;
+			temp = nodes_queue.top();
 
-			P = nodes_queue.top();
 			nodes_queue.pop();
 
-			if(isGoalState(P)) {
+			if(isGoalState(temp)) {
 				cout << endl << "GOAL!!!";
-				print_vector(P.CURRENT_STATE);
+				print_vector(temp.CURRENT_STATE);
 				cout << "To solve this problem the search algorithm expanded a total of "
 				     << totalNodes << " nodes.\n";
 				cout << "The maximum number of nodes in the queue at any one time was "
 					 << max_nodes_in_queue << ".\n";
-				cout << "The depth of the goal node was " << P.gn << ".\n";
+				cout << "The depth of the goal node was " << temp.gn << ".\n";
 				return;
 			}
 
 
-			expand_puzzle(P, nodes_queue, search_choice);
+			expand_puzzle(temp, nodes_queue, search_choice);
 
 		
 			int currMaxQueue = nodes_queue.size();
@@ -578,7 +594,7 @@ void start() {
 
 			cout << "The best state to expand with g(n)=" << nodes_queue.top().gn << " and h(n)=" << nodes_queue.top().hn << " is..." << endl;
 
-			print_vector(P.CURRENT_STATE);
+			print_vector(temp.CURRENT_STATE);
 			cout << endl << "Expanding..." << endl << endl;
 		}
 
